@@ -8,8 +8,8 @@ services:
       - ${CONFIG_ROOT:-.}/joplin/.env
     environment:
       - APP_PORT=22300
-      - APP_BASE_URL=https://${HOSTNAME}/joplin
-      - HOSTNAME=${HOSTNAME}
+      - APP_BASE_URL=https://${JOPLIN_HOSTNAME}
+      - HOSTNAME=${JOPLIN_HOSTNAME}
       - DB_CLIENT=sqlite3
       - SQLITE_DATABASE=/database/joplin.db
       - STORAGE_DRIVER=Type=Filesystem; Path=/storage
@@ -23,16 +23,16 @@ services:
       retries: 10
     labels:
       - traefik.enable=true
-      - traefik.http.routers.joplin.rule=(Host(`${HOSTNAME}`) && PathPrefix(`/joplin`))
+      - traefik.http.routers.joplin.rule=(Host(`${JOPLIN_HOSTNAME}`))
       - traefik.http.routers.joplin.tls=true
       - traefik.http.routers.joplin.tls.certresolver=myresolver
-      - traefik.http.routers.joplin.middlewares=joplin-stripprefix
-      - traefik.http.middlewares.joplin-stripprefix.stripPrefix.prefixes=/joplin
+#      - traefik.http.routers.joplin.middlewares=joplin-stripprefix
+#      - traefik.http.middlewares.joplin-stripprefix.stripPrefix.prefixes=/joplin
       - traefik.http.services.joplin.loadbalancer.server.port=22300
       - homepage.group=Apps
       - homepage.name=Joplin
       - homepage.icon=joplin.png
-      - homepage.href=/joplin
+      - homepage.href=https://${JOPLIN_HOSTNAME}
       - homepage.description=Note-taking application
       - homepage.weight=2
     profiles:

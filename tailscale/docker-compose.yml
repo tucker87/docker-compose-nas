@@ -1,0 +1,32 @@
+services:
+  tailscale-nginx:
+    container_name: tailscale
+    image: tailscale/tailscale:latest
+    hostname: tailscale-nginx
+    environment:
+      - TS_AUTHKEY=tskey-auth-k3yNnuh5Q521CNTRL-Pn3ZMCCZ1kc9JwaNhAmKkcjAJTxSmW7VT
+      - TS_EXTRA_ARGS=--reset --advertise-tags=tag:container --advertise-routes=192.168.2.0/24 --advertise-exit-node --accept-dns=false
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ${CONFIG_ROOT:-.}/tailscale/state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - sys_module
+    restart: unless-stopped
+    sysctls:
+      net.ipv4.ip_forward: 1 
+      net.ipv6.conf.all.forwarding: 1 
+
+#  nginx:
+#    image: nginxdemos/hello
+#    container_name: tailscale-nginx
+#    ports:
+#      - "14440:80"
+#    depends_on:
+#      - tailscale-nginx
+#   network_mode: service:tailscale-nginx
+networks:
+  default:
+    name: docker-compose-nas

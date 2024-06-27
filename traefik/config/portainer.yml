@@ -1,0 +1,28 @@
+http:
+  serversTransports:
+    mytransport:
+      insecureSkipVerify: true
+  routers:
+     frontend:
+       rule: "Host(`portainer.home.notquite.me`)"
+       service: frontend
+       tls:
+         certresolver: myresolver
+     edge:
+       rule: "Host(`edge.home.notquite.me`)"
+       service: edge
+       tls:
+         certresolver: myresolver
+  services:
+    frontend:
+      loadBalancer:
+        serversTransport: mytransport
+        servers:
+          - url: "https://192.168.2.3:9443"
+            scheme: https
+    edge:
+      loadBalancer:
+        serversTransport: mytransport
+        servers:
+          - url: "https://192.168.2.3:8000"
+            scheme: https

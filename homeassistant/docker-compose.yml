@@ -19,6 +19,7 @@ services:
     privileged: true
     labels:
       - traefik.enable=true
+      - traefik.http.routers.homeassistant.entrypoints=http,https,http-ext,https-ext
       - traefik.http.routers.homeassistant.rule=(Host(`${HOMEASSISTANT_HOSTNAME}`))
       - traefik.http.routers.homeassistant.tls=true
       - traefik.http.routers.homeassistant.tls.certresolver=myresolver

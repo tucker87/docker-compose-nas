@@ -10,7 +10,7 @@ services:
       - ${CONFIG_ROOT:-.}/tandoor/mediafiles:/opt/recipes/mediafiles
       - tandoor-staticfiles:/opt/recipes/staticfiles
     healthcheck:
-      test: ["CMD", "wget", "http://127.0.0.1:8080/recipes", "-qO", "/dev/null"]
+      test: ["CMD", "wget", "http://127.0.0.1:8080", "-qO", "/dev/null"]
       interval: 30s
       retries: 10
     profiles:
@@ -27,21 +27,22 @@ services:
       - ${CONFIG_ROOT:-.}/tandoor/mediafiles:/media:ro
       - tandoor-staticfiles:/static:ro
     healthcheck:
-      test: ["CMD", "wget", "http://127.0.0.1/recipes", "-qO", "/dev/null"]
+      test: ["CMD", "wget", "http://127.0.0.1", "-qO", "/dev/null"]
       interval: 30s
       retries: 10
     depends_on:
       - tandoor
     labels:
+      - traefik.http.routers.tandoor.entrypoints=http,https,http-ext,https-ext
       - traefik.enable=true
-      - traefik.http.routers.tandoor.rule=(Host(`${HOSTNAME}`) && PathPrefix(`/recipes`))
+      - traefik.http.routers.tandoor.rule=(Host(`${TANDOOR_HOSTNAME}`))
       - traefik.http.routers.tandoor.tls=true
       - traefik.http.routers.tandoor.tls.certresolver=myresolver
       - traefik.http.services.tandoor.loadbalancer.server.port=80
       - homepage.group=Apps
       - homepage.name=Tandoor
       - homepage.icon=tandoor.png
-      - homepage.href=/recipes
+      - homepage.href=https://${TANDOOR_HOSTNAME}
       - homepage.description=Smart recipe management
       - homepage.weight=1
     profiles:
