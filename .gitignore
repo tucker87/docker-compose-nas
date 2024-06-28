@@ -20,3 +20,4 @@ docker-compose.override.yml
 /adguardhome/work
 /sabnzbd
 traefik/logs/access.log
+.keys
